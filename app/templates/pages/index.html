@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>Reprezentarea datelor în timp real</title>
+    <style>
+        span.b {
+            display: inline;
+            width: 100px;
+            height: 100px;
+            padding: 5px;
+            border: 1px solid blue;
+            background-color: none;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#div_refresh").load("update.php");
+            setInterval(function () {
+                $(#"div_refresh").load("update.php");
+            }, 3000);
+        })
+    </script>
+</head>
+<body>
+    <div class="content">
+        <div class="container-fluid">
+
+            <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.51.1/plotly-basic.min.js"></script>
+            <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+            <div id="bar-uri"></div>
+            <div id="pie-uri2"></div>
+            <script>
+                var cputemp = Math.random()*100 + 1;
+                var fanspeed = Math.random()*100 + 1;
+                var coreavgtemp = Math.random()*100 + 1;
+                var networkspeed = Math.random()*100 + 1;
+                var data = [
+                  {
+                      x: ['CPU Temperature', 'Fan Speed', 'Core Average Temperature', 'Network Speed'],
+                      y: [cputemp, fanspeed, coreavgtemp, networkspeed],
+                      type: 'bar'
+                  }
+                ];
+
+                Plotly.newPlot('bar-uri', data);
+            </script>
+
+            <script>
+                var rand1 = Math.random()*100 + 1;
+                var rev_rand1 = 100-rand1;
+                var data2 = [
+                    {
+                        values: [rand1, rev_rand1],
+                        labels: ['CPU Core Average Percentage', 'Total'],
+                        type: 'pie'
+                    }
+                ];
+
+                var layout = {
+                    height: 400,
+                    width: 500
+                };
+
+                Plotly.newPlot('pie-uri', data2, layout);
+            </script>
+
+            <script>
+                var rand = Math.floor((Math.random()*100) + 1);
+                var rev_rand = 100-rand;
+                var data3 = [
+                    {
+                        values: [rand, rev_rand],
+                        labels: ['Memory Used', 'Memory Free'],
+                        type: 'pie'
+                    }
+                ];
+
+                var layout2 = {
+                    height: 400,
+                    width: 400
+                };
+
+                Plotly.newPlot('pie-uri2', data3, layout2);
+            </script>
+
+        </div>
+    </div>
+</body>
+</html>
+

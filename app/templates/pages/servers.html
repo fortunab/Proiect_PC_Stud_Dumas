@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="alert alert-warning">
+    <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
+        <i class="nc-icon nc-simple-remove"></i>
+    </button>
+    <span>
+        <h3><b> Lista de servere </b></h3>
+    </span>
+</div>
+<form method="POST" action="">
+    <div class="Introducere">
+        {% for s in server %}
+            <p> {{ s.name_serv }}, {{ s.ip_serv }}, {{ s.port_serv }} </p>
+        {% endfor %}
+    </div>
+</form>
+</body>
+</html>

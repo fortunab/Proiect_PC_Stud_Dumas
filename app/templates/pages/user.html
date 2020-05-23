@@ -1,0 +1,198 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    /*
+$(document).ready(function(){
+  $("#btn2").click(function(){
+      var nume = document.getElementById("nume");
+      var ip = document.getElementById("ip");
+      var port = document.getElementById("port");
+      var output = nume.value+"; "+ip.value+"; "+port.value;
+      $("ol").append("<li>" + output + "</li>");
+      document.getElementById("unhide").style.display = "none";
+      nume.value = "";
+      ip.value = "";
+      port.value = "";
+  });
+});
+*/
+</script>
+</head>
+
+<body>
+    <div class="content">
+        <form>
+            <input type="checkbox" onclick="funcdecizie()" id="decizie" name="decizie" value="dec">
+            <label for="decizie"> Doresc notificare</label><br>
+            <p id="text" style="display: none"> Ati activat notificarile</p>
+            <script>
+                function funcdecizie() {
+                    var checkBox = document.getElementById("decizie");
+                    var text = document.getElementById("text");
+                    if (checkBox.checked == true){
+                        text.style.display = "block";
+                    } else {
+                        text.style.display = "none";
+                    }
+                }
+
+                //Pastrarea rezultatului de la checkbox (check/uncheck)
+                $(function(){
+                    var test = localStorage.input === 'true'? true: false;
+                    $('input').prop('checked', test || false);
+                });
+                $('input').on('change', function() {
+                    localStorage.input = $(this).is(':checked'); //se refera la obiectul in sine (input) care trebuie sa fie selectat
+                    console.log($(this).is(':checked'));
+                });
+
+            </script>
+        </form>
+
+        <br />
+        {% if msg %}
+        <p>{{ msg | safe }}</p>
+        <br />
+        {% endif %}
+
+        <div class="container-fluid">
+            <button id="buton1" onclick="addServerInLista()" class="btn" style="height:30px;width:30px"><i class="fa fa-plus"></i> Adauga server</button>
+            <br>
+            <div class="card-body">
+                <form method="post" action="">
+                    <div id="unhide">
+                        <div class="row">
+                            <div class="col-md-1 pl-1">
+                                <div class="form-group">
+                                    <label id="lns">Nume server</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 px-1">
+                                <div class="form-group" id="textfield1">
+                                    {{ form.name_serv(placeholder="Nume server") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 px-1">
+                                <div class="form-group">
+                                        <label id="lip">Server IP</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 px-1">
+                                    <div class="form-group" id="textfield2">
+                                        {{ form.ip_serv(placeholder="Server IP") }}
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 px-1">
+                                <div class="form-group">
+                                    <label id="lport">Server Port</label>
+                                    <!--<input type="text" class="form-group" placeholder="Server Port" id="port" value="">-->
+                                </div>
+                            </div>
+                            <div class="col-md-2 px-1">
+                                <div class="form-group" id="textfield3">
+                                    {{ form.port_serv(placeholder="Port server") }}
+
+                                </div>
+                                <div hidden> <!--StrictJinja, hidden automat ascunde-->
+                                    {% if current_user.is_authenticated %}
+                                        {{ form.username_fk(value=current_user.username) }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="btn2" onclick="funcadd()"> Adaugati</button>
+                        <script>
+                            function funcadd(){
+
+                            }
+                        </script>
+                    </div>
+                </form>
+            </div>
+
+            {% if current_user.is_authenticated %}
+            Salut, {{ current_user.name }}!
+            {% endif %}
+
+            <script>
+                document.getElementById("unhide").style.display = "none";
+                function addServerInLista() {
+                    document.getElementById("unhide").style.display = "block";
+                }
+            </script>
+            <br>
+            <div class="row">
+                <div class="">
+                    <div class="card card-user">
+                        <div class="card-image">
+                            <img src="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400" alt="...">
+                        </div>
+
+                        <div class="author">
+                            <img class="avatar border-gray" src="/static/assets/img/faces/you.jpg" alt="...">
+                            <!--<ol> </ol>-->
+                            {% for s in server %}
+                            {% if s.username_fk==current_user.username %}
+                            <ol id="sterg">
+                            <ol><a href="server?ip={{s.ip_serv}}&port={{s.port_serv}}&name_svr={{s.name_serv}}">
+                                {{ s.name_serv }}, {{ s.ip_serv }}, {{ s.port_serv }}
+                            </a></ol>
+                                <!--<button id="delete-Button" onclick="deleteServerDinLista()"><i class="fa fa-minus"></i> </button>-->
+                                <td>
+                                    <form method="POST" action="./delete" style="display: inline">
+                                      <input type="hidden" value="{{s.name_serv}}" name="name_serv">
+                                      <input type="submit" value="Delete">
+                                    </form>
+                                  </td>
+                            </ol>
+
+                            {% endif %}
+                            {% endfor %}
+
+
+
+                            <script>
+                                document.getElementById("btn2").value = getSavedValue("");
+                                document.getElementById("buton1").value = getSavedValue("");
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="container-fluid">
+            <button id="delete-Button" onclick="deleteServerDinLista()"><i class="fa fa-minus"></i> Sterge server</button>
+            <form method="post" action="">
+                <div id="unhide2">
+                    <div class="row">
+                        <div class="col-md-1 pl-1">
+                            <div class="form-group">
+                                <label id="lns_delete">Nume server</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 px-1">
+                            <div class="form-group">
+                                {{ form.name_serv(placeholder="Nume server") }}
+                            </div>
+                        </div>
+                    </div>
+                    <button id="confirm"> Confirma</button>
+                </div>
+            </form>
+            <script>
+                document.getElementById("unhide2").style.display = "none";
+                function deleteServerDinLista() {
+                    document.getElementById("unhide2").style.display = "block";
+                }
+            </script>
+        </div>-->
+    </div>
+</body>
+</html>

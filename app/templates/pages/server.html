@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script>
+        function myFunction(x) {
+        $.getJSON('/server' + '/check_selected', {
+        post: x },
+        function() {
+            var response = {{ connected }};
+            response = false;
+            console.log(response);
+        }
+        )};
+    </script>
+
+    <script>
+        var i, checkboxes = document.querySelectorAll('input[type=checkbox]');
+    </script>
+
+</head>
+<body>
+<div id="result">
+    <script>
+        setTimeout(function () {
+            location.reload()
+        }, 5000)
+    </script>
+
+    <h1> {{ request.args.get('ip') }}:{{ request.args.get('port') }} </h1>
+
+    <table>
+        <tr>
+           <td>Server Name: {{ server_name }}</td>
+        </tr>
+         <tr>
+           <td>Install Memory: {{ memory }}</td>
+        </tr>
+         <tr>
+           <td>Server is present on Network IP: {{ network }}</td>
+        </tr>
+         <tr>
+           <td>Free Space on device: {{ diskFreeSpace }}</td>
+        </tr>
+         <tr>
+           <td>Total space: {{ diskInfo }}</td>
+        </tr>
+         <tr>
+           <td>Network Upload: {{ networkSpeedUpload }}</td>
+        </tr>
+         <tr>
+           <td>Network Download: {{networkSpeedDownload}}</td>
+        </tr>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.51.1/plotly-basic.min.js"></script>
+
+    <div id="bar-uri"></div>
+    <table>
+        <tr>
+            <!--<td><div id="pie-uri5"></div></td>-->
+            <td><div id="pie-uri2"></div></td>
+        </tr>
+    </table>
+
+    <script>
+        var cputemp = {{ cpuTemp }};
+        var fanspeed = {{ fanSpeed }};
+        var memorytemp = {{ memoryTemp }};
+        var avgcpuusage = {{ cpuAvgUsage }};
+        var data = [
+            {
+                x: ['CPU Temperature', 'Fan Speed', 'Memory Temp', 'Average CPU Usage'],
+                y: [cputemp, fanspeed, memorytemp, avgcpuusage],
+                type: 'bar'
+            }
+        ];
+
+        Plotly.newPlot('bar-uri', data);
+    </script>
+
+    <script>
+        var dfs = {{ diskFreeSpace }};
+        var rev_dfs = {{ diskInfo }};
+        var percdfs = (dfs/rev_dfs)*100;
+        var rev_percdfs = 100-percdfs;
+        var data2 = [
+            {
+                values: [percdfs, rev_percdfs],
+                labels: ['Free Disk Space Percentage', 'Total'],
+                type: 'pie'
+            }
+        ];
+
+        var layout = {
+            height: 400,
+            width: 500
+        };
+
+        Plotly.newPlot('pie-uri5', data2, layout);
+    </script>
+
+    <script>
+        var mem = {{ memoryUsage }};
+        var rev_mem = 100-mem;
+        var data3 = [
+            {
+                values: [mem, rev_mem],
+                labels: ['Memory Used', 'Memory Free'],
+                type: 'pie'
+            }
+        ];
+
+        var layout2 = {
+            height: 400,
+            width: 500
+        };
+
+        Plotly.newPlot('pie-uri2', data3, layout2);
+
+    </script>
+
+    <script>
+        function save() {
+            for (i = 0; i < checkboxes.length; i++) {
+                localStorage.setItem(checkboxes[i].value, checkboxes[i].checked);
+            }
+        }
+
+        function load_() {
+            for (i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = localStorage.getItem(checkboxes[i].value) === 'true' ? true:false;
+            }
+        }
+    </script>
+
+</div>
+
+</body>
+</html>
